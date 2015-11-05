@@ -84,13 +84,14 @@ int main(int argc, char * argv[]){
 		execute(args);
 		*/
 
-
+		
 		//NEW CODE BLOCK FOR HANDLING MULTIPLE COMMANDS
+
 		//loop through the tokens vector
-		for (unsigned int i = 0; i <tokens.size(); i++){
+		for (unsigned int i = 0; i < tokens.size(); i++){
 			//if connector is found we determine which and 
 			//operate according to the previous connector found
-			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||" || i == tokens.size() - 1){
+			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||"){
 				args[counter] = 0;
 				
 				//if previous connector was ;
@@ -136,6 +137,55 @@ int main(int argc, char * argv[]){
 					counter = 0;
 				}
 			}
+			
+			//if last command
+			else if (i == tokens.size() - 1){
+				args[counter] = const_cast<char *>(tokens[counter].c_str());
+				args[counter + 1] = 0;
+				//if previous connector was ;
+				if (prevCn == ";"){
+					execute(args);							//will update success to t/f
+
+					//clear args array, reset counter, and set prevCn for next command
+					for (unsigned int j = 0; j < 128; j++){
+						args[j] = 0;
+					}
+
+					prevCn = tokens[i];
+					counter = 0;
+				}
+
+				//if previous connector was &&
+				if (prevCn == "&&"){
+					if (success == true){
+						execute(args);						//will update success to t/f
+					}
+
+					//clear args array, reset counter, and set prevCn for next command
+					for (unsigned int j = 0; j < 128; j++){
+						args[j] = 0;
+					}
+
+					prevCn = tokens[i];
+					counter = 0;
+				}
+
+				//if previous connector was ||
+				if (prevCn == "||"){
+					if (success == false){
+						execute(args);						//will update success to t/f
+					}
+
+					//clear args array, reset counter, and set prevCn for next command
+					for (unsigned int j = 0; j < 128; j++){
+						args[j] = 0;
+					}
+
+					prevCn = tokens[i];
+					counter = 0;
+				}
+			}
+			
 
 			//if not a connector, store into args array
 			args[counter] = const_cast<char *>(tokens[counter].c_str());
