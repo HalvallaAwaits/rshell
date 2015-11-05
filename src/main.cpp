@@ -23,6 +23,10 @@ int main(int argc, char * argv[]){
 		char hostname[100];									//holds hostname
 		char * username;										//holds username
 
+		string prevCn = ";";									//holds previous connector
+		int counter = 0;										//used to loop through vector
+		bool success = true;									//passed back from execvp
+
 		//----------------------
 		//shell prompt display with user and host names
 		//----------------------
@@ -64,7 +68,11 @@ int main(int argc, char * argv[]){
 		//based on the logic attached to the connector.
 		//Start with ; and then && followed by ||.
 		//-------------------------------------------------
-		
+	
+
+
+
+		/*
 		//convert strings into char * for storage in args array
 		for (unsigned int i = 0; i < tokens.size(); i++){
 			args[i] = const_cast<char *>(tokens[i].c_str());
@@ -74,6 +82,66 @@ int main(int argc, char * argv[]){
 		 
 		//execute
 		execute(args);
+		*/
+
+
+		//NEW CODE BLOCK FOR HANDLING MULTIPLE COMMANDS
+		//loop through the tokens vector
+		for (unsigned int i = 0; i <tokens.size(); i++){
+			//if connector is found we determine which and 
+			//operate according to the previous connector found
+			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||" || i == tokens.size() - 1){
+				args[counter] = 0;
+				
+				//if previous connector was ;
+				if (prevCn == ";"){
+					execute(args);							//will update success to t/f
+
+					//clear args array, reset counter, and set prevCn for next command
+					for (unsigned int j = 0; j < 128; j++){
+						args[j] = 0;
+					}
+
+					prevCn = tokens[i];
+					counter = 0;
+				}
+
+				//if previous connector was &&
+				if (prevCn == "&&"){
+					if (success == true){
+						execute(args);						//will update success to t/f
+					}
+
+					//clear args array, reset counter, and set prevCn for next command
+					for (unsigned int j = 0; j < 128; j++){
+						args[j] = 0;
+					}
+
+					prevCn = tokens[i];
+					counter = 0;
+				}
+
+				//if previous connector was ||
+				if (prevCn == "||"){
+					if (success == false){
+						execute(args);						//will update success to t/f
+					}
+
+					//clear args array, reset counter, and set prevCn for next command
+					for (unsigned int j = 0; j < 128; j++){
+						args[j] = 0;
+					}
+
+					prevCn = tokens[i];
+					counter = 0;
+				}
+			}
+
+			//if not a connector, store into args array
+			args[counter] = const_cast<char *>(tokens[counter].c_str());
+			counter++;
+		}
+
 	}
 	return 0; 
 }
