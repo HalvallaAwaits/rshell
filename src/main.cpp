@@ -11,14 +11,15 @@
 using namespace std;
 
 //function prototypes
-void execute(char **);
+void execute(char **, bool &);
 
 int main(int argc, char * argv[]){
 
 	while (true){
 		//variables	
 		string inputLine;										//holds the user input
-		char * args[8];										//holds the command
+		const int SIZE = 8;										//args size
+		char * args[SIZE];										//holds the command
 		vector<string> tokens;								//holds tokens
 		char hostname[100];									//holds hostname
 		char * username;										//holds username
@@ -68,8 +69,7 @@ int main(int argc, char * argv[]){
 		//based on the logic attached to the connector.
 		//Start with ; and then && followed by ||.
 		//-------------------------------------------------
-
-		/*
+/*
 		//convert strings into char * for storage in args array
 		for (unsigned int i = 0; i < tokens.size(); i++){
 			args[i] = const_cast<char *>(tokens[i].c_str());
@@ -79,8 +79,7 @@ int main(int argc, char * argv[]){
 		 
 		//execute
 		execute(args);
-		*/
-
+*/
 
 
 		//---------------------------------------------
@@ -95,10 +94,10 @@ int main(int argc, char * argv[]){
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
-					execute(args);							//will update success to t/f
+					execute(args, success);				//will update success to t/f
 
 					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < 128; j++){
+					for (unsigned int j = 0; j < SIZE; j++){
 						args[j] = 0;
 					}
 
@@ -109,11 +108,11 @@ int main(int argc, char * argv[]){
 				//if previous connector was &&
 				if (prevCn == "&&"){
 					if (success == true){
-						execute(args);						//will update success to t/f
+						execute(args, success);			//will update success to t/f
 					}
 
 					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < 128; j++){
+					for (unsigned int j = 0; j < SIZE; j++){
 						args[j] = 0;
 					}
 
@@ -124,11 +123,11 @@ int main(int argc, char * argv[]){
 				//if previous connector was ||
 				if (prevCn == "||"){
 					if (success == false){
-						execute(args);						//will update success to t/f
+						execute(args, success);			//will update success to t/f
 					}
 
 					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < 128; j++){
+					for (unsigned int j = 0; j < SIZE; j++){
 						args[j] = 0;
 					}
 
@@ -146,10 +145,10 @@ int main(int argc, char * argv[]){
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
-					execute(args);							//will update success to t/f
-
+					execute(args, success);				//will update success to t/f
+					cout << "success: " << success << endl;
 					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < 128; j++){
+					for (unsigned int j = 0; j < SIZE; j++){
 						args[j] = 0;
 					}
 
@@ -160,11 +159,11 @@ int main(int argc, char * argv[]){
 				//if previous connector was &&
 				if (prevCn == "&&"){
 					if (success == true){
-						execute(args);						//will update success to t/f
+						execute(args, success);			//will update success to t/f
 					}
 
 					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < 128; j++){
+					for (unsigned int j = 0; j < SIZE; j++){
 						args[j] = 0;
 					}
 
@@ -175,11 +174,11 @@ int main(int argc, char * argv[]){
 				//if previous connector was ||
 				if (prevCn == "||"){
 					if (success == false){
-						execute(args);						//will update success to t/f
+						execute(args, success);			//will update success to t/f
 					}
 
 					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < 128; j++){
+					for (unsigned int j = 0; j < SIZE; j++){
 						args[j] = 0;
 					}
 
@@ -187,18 +186,18 @@ int main(int argc, char * argv[]){
 					counter = 0;
 				}
 			}
-			
 
-			//if not a connector, store into args array
-			args[counter] = const_cast<char *>(tokens[counter].c_str());
-			counter++;
+			else{
+				//if not a connector, store into args array
+				args[counter] = const_cast<char *>(tokens[counter].c_str());
+				counter++;
+			}
 		}
-
 	}
 	return 0; 
 }
 
-void execute(char **cmd){
+void execute(char **cmd, bool &s){
 	pid_t c_pid, pid;
 	int status;
 
@@ -206,6 +205,7 @@ void execute(char **cmd){
 
 	if( c_pid < 0){
 		perror("fork failed");
+		s = false;
 		exit(1);
 	}
 
@@ -213,13 +213,16 @@ void execute(char **cmd){
 		printf("Child: executing\n");
 		execvp( *cmd, cmd);
 		perror("execve failed");
+		s = false;
 	}
 	
 	else if (c_pid > 0){
 		if( (pid = wait(&status)) < 0){
 			perror("wait");
+			s = false;
 			exit(1);
 		}
 		printf("Parent: finished\n");
+		s = true;
 	}
 }
