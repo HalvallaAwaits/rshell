@@ -18,7 +18,7 @@ int main(int argc, char * argv[]){
 	while (true){
 		//variables	
 		string inputLine;										//holds the user input
-		char * args[128];										//holds the command
+		char * args[8];										//holds the command
 		vector<string> tokens;								//holds tokens
 		char hostname[100];									//holds hostname
 		char * username;										//holds username
@@ -68,9 +68,6 @@ int main(int argc, char * argv[]){
 		//based on the logic attached to the connector.
 		//Start with ; and then && followed by ||.
 		//-------------------------------------------------
-	
-
-
 
 		/*
 		//convert strings into char * for storage in args array
@@ -84,9 +81,11 @@ int main(int argc, char * argv[]){
 		execute(args);
 		*/
 
-		
-		//NEW CODE BLOCK FOR HANDLING MULTIPLE COMMANDS
 
+
+		//---------------------------------------------
+		//NEW CODE BLOCK FOR HANDLING MULTIPLE COMMANDS
+		//---------------------------------------------
 		//loop through the tokens vector
 		for (unsigned int i = 0; i < tokens.size(); i++){
 			//if connector is found we determine which and 
@@ -137,11 +136,14 @@ int main(int argc, char * argv[]){
 					counter = 0;
 				}
 			}
-			
-			//if last command
+
+			//------------------------------
+			//if last command to run
+			//------------------------------
 			else if (i == tokens.size() - 1){
 				args[counter] = const_cast<char *>(tokens[counter].c_str());
 				args[counter + 1] = 0;
+				
 				//if previous connector was ;
 				if (prevCn == ";"){
 					execute(args);							//will update success to t/f
