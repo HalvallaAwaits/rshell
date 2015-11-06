@@ -96,7 +96,7 @@ int main(int argc, char * argv[]){
 				}
 
 				//clear args array, reset counter, and set prevCn for next command
-				for (unsigned int j = 0; j < SIZE; j++){
+				for (int j = 0; j < SIZE; j++){
 					args[j] = 0;
 				}
 
@@ -131,7 +131,7 @@ int main(int argc, char * argv[]){
 				}
 
 				//clear args array, reset counter, and set prevCn for next user input 
-				for (unsigned int j = 0; j < SIZE; j++){
+				for (int j = 0; j < SIZE; j++){
 					args[j] = 0;
 				}
 
