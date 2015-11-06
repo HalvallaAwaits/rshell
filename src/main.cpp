@@ -18,8 +18,8 @@ int main(int argc, char * argv[]){
 	while (true){
 		//variables	
 		string inputLine;										//holds the user input
-		const int SIZE = 8;										//args size
-		char * args[SIZE];										//holds the command
+		const int SIZE = 16;									//args size
+		char * args[SIZE];									//holds the command
 		vector<string> tokens;								//holds tokens
 		char hostname[100];									//holds hostname
 		char * username;										//holds username
@@ -61,130 +61,82 @@ int main(int argc, char * argv[]){
 			tokens.push_back(*tok_iter);
 		}
 
-		//-------------------------------------------------
-		//THIS ONLY WORKS FOR SINGLE COMMAND!!!
-		//This is where we will loop through the entire vector.
-		//When you hit a connector, you will execute the
-		//command that was just stored prior to hitting it
-		//based on the logic attached to the connector.
-		//Start with ; and then && followed by ||.
-		//-------------------------------------------------
-/*
-		//convert strings into char * for storage in args array
-		for (unsigned int i = 0; i < tokens.size(); i++){
-			args[i] = const_cast<char *>(tokens[i].c_str());
-		}
+		//----------------------------------------------------
+		//Loop through the tokens and execute based on logic
+		//tied to the connecter that precedes the command
+		//
+		//BUG NOTICE: This is currently only working on 2 commands
+		//and if the second command has arguments attached
+		//it will not work.
+		//----------------------------------------------------
 
-		args[tokens.size()] = 0;
-		 
-		//execute
-		execute(args);
-*/
-
-
-		//---------------------------------------------
-		//NEW CODE BLOCK FOR HANDLING MULTIPLE COMMANDS
-		//---------------------------------------------
 		//loop through the tokens vector
 		for (unsigned int i = 0; i < tokens.size(); i++){
-			//if connector is found we determine which and 
-			//operate according to the previous connector found
+			//if token is connector, operate based on previous connector
 			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||"){
 				args[counter] = 0;
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
 					execute(args, success);				//will update success to t/f
-
-					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < SIZE; j++){
-						args[j] = 0;
-					}
-
-					prevCn = tokens[i];
-					counter = 0;
 				}
 
 				//if previous connector was &&
-				if (prevCn == "&&"){
+				else if (prevCn == "&&"){
 					if (success == true){
 						execute(args, success);			//will update success to t/f
 					}
-
-					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < SIZE; j++){
-						args[j] = 0;
-					}
-
-					prevCn = tokens[i];
-					counter = 0;
 				}
 
 				//if previous connector was ||
-				if (prevCn == "||"){
+				else if (prevCn == "||"){
 					if (success == false){
 						execute(args, success);			//will update success to t/f
 					}
-
-					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < SIZE; j++){
-						args[j] = 0;
-					}
-
-					prevCn = tokens[i];
-					counter = 0;
 				}
+
+				//clear args array, reset counter, and set prevCn for next command
+				for (unsigned int j = 0; j < SIZE; j++){
+					args[j] = 0;
+				}
+
+				prevCn = tokens[i];
+				counter = 0;
 			}
 
 			//------------------------------
 			//if last command to run
 			//------------------------------
 			else if (i == tokens.size() - 1){
-				args[counter] = const_cast<char *>(tokens[counter].c_str());
+				args[counter] = const_cast<char *>(tokens[i].c_str());
 				args[counter + 1] = 0;
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
 					execute(args, success);				//will update success to t/f
-					cout << "success: " << success << endl;
-					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < SIZE; j++){
-						args[j] = 0;
-					}
-
-					prevCn = tokens[i];
-					counter = 0;
 				}
 
 				//if previous connector was &&
-				if (prevCn == "&&"){
+				else if (prevCn == "&&"){
 					if (success == true){
 						execute(args, success);			//will update success to t/f
 					}
-
-					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < SIZE; j++){
-						args[j] = 0;
-					}
-
-					prevCn = tokens[i];
-					counter = 0;
 				}
 
 				//if previous connector was ||
-				if (prevCn == "||"){
+				else if (prevCn == "||"){
 					if (success == false){
 						execute(args, success);			//will update success to t/f
 					}
-
-					//clear args array, reset counter, and set prevCn for next command
-					for (unsigned int j = 0; j < SIZE; j++){
-						args[j] = 0;
-					}
-
-					prevCn = tokens[i];
-					counter = 0;
 				}
+
+				//clear args array, reset counter, and set prevCn for next user input 
+				for (unsigned int j = 0; j < SIZE; j++){
+					args[j] = 0;
+				}
+
+				prevCn = tokens[i];
+				counter = 0;
 			}
 
 			else{
