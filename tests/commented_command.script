@@ -1,0 +1,12 @@
+Script started on Fri 06 Nov 2015 09:42:42 PM PST
+[jreim001@hammer rshell]$ bin/rshell
+[jreim001@hammer.cs.ucr.edu] $ mkdirsTESTn&&drme-rnTESTm#making a test directory and then deleting it
+[jreim001@hammer.cs.ucr.edu] $ date; pwd; #comment in middle of commands && echo hello
+Fri Nov	 6 21:43:59 PST 2015
+/home/csmajs/jreim001/CS100/rshell
+[jreim001@hammer.cs.ucr.edu] $ #comment to start
+[jreim001@hammer.cs.ucr.edu] $ exit
+[jreim001@hammer rshell]$ exit
+exit
+
+Script done on Fri 06 Nov 2015 09:44:14 PM PST

@@ -1,0 +1,14 @@
+Script started on Fri 06 Nov 2015 09:47:21 PM PST
+[jreim001@hammer rshell]$ bin/rshell
+[jreim001@hammer.cs.ucr.edu] $ ls; exit
+bin  exit1.script  LICENSE.txt	Makefile  README.md  src  tests	 typescript
+[jreim001@hammer rshell]$ bin/rshell
+[jreim001@hammer.cs.ucr.edu] $ date && pwd; exit
+Fri Nov	 6 21:47:58 PST 2015
+/home/csmajs/jreim001/CS100/rshell
+[jreim001@hammer rshell]$ bin/rshell
+[jreim001@hammer.cs.ucr.edu] $ exit
+[jreim001@hammer rshell]$ exit
+exit
+
+Script done on Fri 06 Nov 2015 09:48:08 PM PST

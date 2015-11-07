@@ -55,7 +55,7 @@ int main(int argc, char * argv[]){
 		
 		//parse input in order to execute	
 		typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-		boost::char_separator<char> sep(" \n", ";");
+		boost::char_separator<char> sep(" \n", ";#");
 		tokenizer toks(inputLine, sep);
 		
 		//copy tokens into vector for easier storage/manipulation 
@@ -67,15 +67,38 @@ int main(int argc, char * argv[]){
 		//Loop through the tokens and execute based on logic
 		//tied to the connecter that precedes the command
 		//----------------------------------------------------
-
-		//loop through the tokens vector
 		for (unsigned int i = 0; i < tokens.size(); i++){
 			//if "exit" is found at any point in tokens
 			if (tokens[i] == "exit"){
 				exit(0);	
 			}
 
-			//if hastag (#) is found, execute for commented line
+			//if hastag (#) is found, execute for commented line based on prev connector
+			//and take new command from user
+			if (tokens[i] == "#"){
+				if (prevCn == ";"){
+					args[i] = 0;
+					success = execute(args);				//execute stored command
+					break;
+				}
+
+				if (prevCn == "&&"){
+					if (success == true){
+						args[i] = 0;
+						success = execute(args);			//execute stored command
+					}
+					break;
+				}
+
+				if (prevCn == "||"){
+					if (success == false){
+						args[i] = 0;
+						success = execute(args);			//execute stored command	
+					}
+					break;
+				}
+
+			}
 
 			//if token is connector, operate based on previous connector
 			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||"){
@@ -83,23 +106,20 @@ int main(int argc, char * argv[]){
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
-					//execute(args, success);				//will update success to t/f
-					success = execute(args);	
+					success = execute(args);				//execute stored command	
 				}
 
 				//if previous connector was &&
 				else if (prevCn == "&&"){
-					cout << endl << "success = " << success << endl;
 					if (success == true){
-						success = execute(args);			//will update success to t/f
+						success = execute(args);			//execute stored command
 					}
 				}
 
 				//if previous connector was ||
 				else if (prevCn == "||"){
-					cout << endl << "success = " << success << endl;
 					if (success == false){
-						success = execute(args);			//will update success to t/f
+						success = execute(args);			//execute stored command
 					}
 				}
 
@@ -121,22 +141,20 @@ int main(int argc, char * argv[]){
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
-					success = execute(args);				//will update success to t/f
+					success = execute(args);				//execute stored command
 				}
 
 				//if previous connector was &&
 				else if (prevCn == "&&"){
-					cout << endl << "success = " << success << endl;
 					if (success == true){
-						success = execute(args);			//will update success to t/f
+						success = execute(args);			//execute stored command
 					}
 				}
 
 				//if previous connector was ||
 				else if (prevCn == "||"){
-					cout << endl << "success = " << success << endl;
 					if (success == false){
-						success = execute(args);			//will update success to t/f
+						success = execute(args);			//execute stored command
 					}
 				}
 
@@ -171,7 +189,6 @@ bool execute(char **cmd){
 	}
 	
 	else if (c_pid == 0){
-		//printf("Child: executing\n");
 		execvp( *cmd, cmd);
 		perror("execve failed");
 		exit(1);
@@ -182,7 +199,6 @@ bool execute(char **cmd){
 			perror("wait");
 			exit(1);
 		}
-		//printf("Parent: finished\n");
 	}
 
 	if (status !=0){
