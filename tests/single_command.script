@@ -1,0 +1,60 @@
+Script started on Fri 06 Nov 2015 09:29:57 PM PST
+[jreim001@hammer rshell]$ bin/rshell
+[jreim001@hammer.cs.ucr.edu] $ cat Makefile
+#flags for compling from hw specs
+CFLAS = -Wall -Werror -ansi -pedantic
+
+all: rshell
+
+install: all
+			export PATH="~/bin:$(PATH)"
+			cp -a ./bin ~/
+
+rshell:
+			([ ! -d bin ] && mkdir bin) || [ -d bin ]
+			g++ $(CFLAGS) src/main.cpp  -o bin/rshell
+
+clean:
+			rm -rf bin
+			rm -rf ~/bin
+[jreim001@hammer.cs.ucr.edu] $ date
+Fri Nov	 6 21:30:23 PST 2015
+[jreim001@hammer.cs.ucr.edu] $ ls -a -l
+total 56
+drwxr-xr-x 6 jreim001 csmajs  4096 Nov	6 21:27 .
+drwxr-xr-x 5 jreim001 csmajs  4096 Nov	5 11:17 ..
+drwxr-xr-x 2 jreim001 csmajs  4096 Nov	6 21:26 bin
+drwxr-xr-x 8 jreim001 csmajs  4096 Nov	6 20:21 .git
+-rw-r--r-- 1 jreim001 csmajs 18651 Nov	5 11:19 LICENSE.txt
+-rw-r--r-- 1 jreim001 csmajs   285 Nov	6 20:19 Makefile
+-rw-r--r-- 1 jreim001 csmajs   840 Nov	5 11:19 README.md
+-rw-r--r-- 1 jreim001 csmajs	 0 Nov	6 21:29 single_command.script
+drwxr-xr-x 2 jreim001 csmajs  4096 Nov	6 21:25 src
+drwxr-xr-x 2 jreim001 csmajs  4096 Nov	6 21:27 tests
+-rw-r--r-- 1 jreim001 csmajs   179 Nov	6 21:27 typescript
+[jreim001@hammer.cs.ucr.edu] $ mk dir TEST
+execve failed: No such file or directory
+[jreim001@hammer.cs.ucr.edu] $ mkdir TEST
+[jreim001@hammer.cs.ucr.edu] $ ls -l
+total 48
+drwxr-xr-x 2 jreim001 csmajs  4096 Nov	6 21:26 bin
+-rw-r--r-- 1 jreim001 csmajs 18651 Nov	5 11:19 LICENSE.txt
+-rw-r--r-- 1 jreim001 csmajs   285 Nov	6 20:19 Makefile
+-rw-r--r-- 1 jreim001 csmajs   840 Nov	5 11:19 README.md
+-rw-r--r-- 1 jreim001 csmajs	 0 Nov	6 21:29 single_command.script
+drwxr-xr-x 2 jreim001 csmajs  4096 Nov	6 21:25 src
+drwxr-xr-x 2 jreim001 csmajs  4096 Nov	6 21:30 TEST
+drwxr-xr-x 2 jreim001 csmajs  4096 Nov	6 21:27 tests
+-rw-r--r-- 1 jreim001 csmajs   179 Nov	6 21:27 typescript
+[jreim001@hammer.cs.ucr.edu] $ rm -r TEST
+[jreim001@hammer.cs.ucr.edu] $ ls
+bin  LICENSE.txt  Makefile  README.md  single_command.script  src  tests  typescript
+[jreim001@hammer.cs.ucr.edu] $ pwd
+/home/csmajs/jreim001/CS100/rshell
+[jreim001@hammer.cs.ucr.edu] $ echo These iseourrsingle command test!
+These is our single command test!
+[jreim001@hammer.cs.ucr.edu] $ exit
+[jreim001@hammer rshell]$ exit
+exit
+
+Script done on Fri 06 Nov 2015 09:31:36 PM PST
