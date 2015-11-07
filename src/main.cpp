@@ -75,6 +75,8 @@ int main(int argc, char * argv[]){
 				exit(0);	
 			}
 
+			//if hastag (#) is found, execute for commented line
+
 			//if token is connector, operate based on previous connector
 			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||"){
 				args[counter] = 0;
