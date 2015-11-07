@@ -1,5 +1,16 @@
-all:
-	g++ src/main.cpp -Wall -Werror -ansi -pedantic -o main
+#flags for compling from hw specs
+CFLAS = -Wall -Werror -ansi -pedantic
+
+all: rshell
+
+install: all
+			export PATH="~/bin:$(PATH)"
+			cp -a ./bin ~/
 
 rshell:
-	g++ src/main.cpp -Wall -Werror -ansi -pedantic -o main
+			([ ! -d bin ] && mkdir bin) || [ -d bin ]
+			g++ $(CFLAGS) src/main.cpp  -o bin/rshell
+
+clean:
+			rm -rf bin
+			rm -rf ~/bin
