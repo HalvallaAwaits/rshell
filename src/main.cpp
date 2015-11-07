@@ -11,7 +11,9 @@
 using namespace std;
 
 //function prototypes
-void execute(char **, bool &);
+//void execute(char **, bool &);
+bool execute(char **);
+
 
 int main(int argc, char * argv[]){
 
@@ -64,34 +66,38 @@ int main(int argc, char * argv[]){
 		//----------------------------------------------------
 		//Loop through the tokens and execute based on logic
 		//tied to the connecter that precedes the command
-		//
-		//BUG NOTICE: This is currently only working on 2 commands
-		//and if the second command has arguments attached
-		//it will not work.
 		//----------------------------------------------------
 
 		//loop through the tokens vector
 		for (unsigned int i = 0; i < tokens.size(); i++){
+			//if "exit" is found at any point in tokens
+			if (tokens[i] == "exit"){
+				exit(0);	
+			}
+
 			//if token is connector, operate based on previous connector
 			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||"){
 				args[counter] = 0;
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
-					execute(args, success);				//will update success to t/f
+					//execute(args, success);				//will update success to t/f
+					success = execute(args);	
 				}
 
 				//if previous connector was &&
 				else if (prevCn == "&&"){
+					cout << endl << "success = " << success << endl;
 					if (success == true){
-						execute(args, success);			//will update success to t/f
+						success = execute(args);			//will update success to t/f
 					}
 				}
 
 				//if previous connector was ||
 				else if (prevCn == "||"){
+					cout << endl << "success = " << success << endl;
 					if (success == false){
-						execute(args, success);			//will update success to t/f
+						success = execute(args);			//will update success to t/f
 					}
 				}
 
@@ -113,20 +119,22 @@ int main(int argc, char * argv[]){
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
-					execute(args, success);				//will update success to t/f
+					success = execute(args);				//will update success to t/f
 				}
 
 				//if previous connector was &&
 				else if (prevCn == "&&"){
+					cout << endl << "success = " << success << endl;
 					if (success == true){
-						execute(args, success);			//will update success to t/f
+						success = execute(args);			//will update success to t/f
 					}
 				}
 
 				//if previous connector was ||
 				else if (prevCn == "||"){
+					cout << endl << "success = " << success << endl;
 					if (success == false){
-						execute(args, success);			//will update success to t/f
+						success = execute(args);			//will update success to t/f
 					}
 				}
 
@@ -141,7 +149,7 @@ int main(int argc, char * argv[]){
 
 			else{
 				//if not a connector, store into args array
-				args[counter] = const_cast<char *>(tokens[counter].c_str());
+				args[counter] = const_cast<char *>(tokens[i].c_str());
 				counter++;
 			}
 		}
@@ -149,7 +157,7 @@ int main(int argc, char * argv[]){
 	return 0; 
 }
 
-void execute(char **cmd, bool &s){
+bool execute(char **cmd){
 	pid_t c_pid, pid;
 	int status;
 
@@ -157,24 +165,27 @@ void execute(char **cmd, bool &s){
 
 	if( c_pid < 0){
 		perror("fork failed");
-		s = false;
 		exit(1);
 	}
-
+	
 	else if (c_pid == 0){
-		printf("Child: executing\n");
+		//printf("Child: executing\n");
 		execvp( *cmd, cmd);
 		perror("execve failed");
-		s = false;
+		exit(1);
 	}
 	
 	else if (c_pid > 0){
 		if( (pid = wait(&status)) < 0){
 			perror("wait");
-			s = false;
 			exit(1);
 		}
-		printf("Parent: finished\n");
-		s = true;
+		//printf("Parent: finished\n");
 	}
+
+	if (status !=0){
+		return false;
+	}
+
+	return true;
 }
