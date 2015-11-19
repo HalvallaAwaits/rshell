@@ -11,7 +11,6 @@
 using namespace std;
 
 //function prototypes
-//void execute(char **, bool &);
 bool execute(char **);
 
 
