@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <iostream>
 #include <string>
@@ -12,7 +13,7 @@ using namespace std;
 
 //function prototypes
 bool execute(char **);
-
+bool test(char **);
 
 int main(int argc, char * argv[]){
 
@@ -54,7 +55,7 @@ int main(int argc, char * argv[]){
 		
 		//parse input in order to execute	
 		typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-		boost::char_separator<char> sep(" \n", "();#");
+		boost::char_separator<char> sep(" \n", "[]();#");
 
 		tokenizer toks(inputLine, sep);
 		
@@ -77,6 +78,14 @@ int main(int argc, char * argv[]){
 				else if (prevCn == "||" && success == false)
 					exit(0);
 			}
+
+			//replace "[" with test
+			if (tokens[i] == "[")
+				tokens[i] = "test";
+
+			//remove "]" if found
+			if (tokens[i] == "]")
+				tokens.erase(tokens.begin() + i);
 
 			//if hastag (#) is found, execute for commented line based on prev connector
 			//and take new command from user
@@ -102,29 +111,37 @@ int main(int argc, char * argv[]){
 					}
 					break;
 				}
-
 			}
 
 			//if token is connector, operate based on previous connector
 			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||" || tokens[i] == ")"){
 				args[counter] = 0;
-				
+			
 				//if previous connector was ;
 				if (prevCn == ";"){
-					success = execute(args);				//execute stored command	
+					if (args[0] == "test")
+						success = test(args);					//execute test
+					else	
+						success = execute(args);				//execute stored command
 				}
 
 				//if previous connector was &&
 				else if (prevCn == "&&"){
 					if (success == true){
-						success = execute(args);			//execute stored command
+						if (args[0] == "test")
+							success = test(args);					//execute test
+						else	
+							success = execute(args);				//execute stored command
 					}
 				}
 
 				//if previous connector was ||
 				else if (prevCn == "||"){
 					if (success == false){
-						success = execute(args);			//execute stored command
+						if (args[0] == "test")
+							success = test(args);					//execute test
+						else	
+							success = execute(args);				//execute stored command
 					}
 				}
 
@@ -154,20 +171,29 @@ int main(int argc, char * argv[]){
 				
 				//if previous connector was ;
 				if (prevCn == ";"){
-					success = execute(args);				//execute stored command
+					if (args[0] == "test")
+						success = test(args);					//execute test
+					else	
+						success = execute(args);				//execute stored command
 				}
 
 				//if previous connector was &&
 				else if (prevCn == "&&"){
 					if (success == true){
-						success = execute(args);			//execute stored command
+						if (args[0] == "test")
+							success = test(args);					//execute test
+						else	
+							success = execute(args);				//execute stored command
 					}
 				}
 
 				//if previous connector was ||
 				else if (prevCn == "||"){
 					if (success == false){
-						success = execute(args);			//execute stored command
+						if (args[0] == "test")
+							success = test(args);					//execute test
+						else	
+							success = execute(args);				//execute stored command
 					}
 				}
 
@@ -180,7 +206,6 @@ int main(int argc, char * argv[]){
 				counter = 0;
 			}
 
-			
 			//if not a connector
 			else{
 				args[counter] = const_cast<char *>(tokens[i].c_str());
@@ -189,6 +214,45 @@ int main(int argc, char * argv[]){
 		}
 	}
 	return 0; 
+}
+
+bool test(char **cmd){
+	
+	struct stat sb;
+	int index = 1;
+
+	//check to see if first element of f is a flag
+	if ((cmd[1] == "-e") || (cmd[1] == "-f") || (cmd[1] == "-d")){
+		index++; 
+
+	}
+
+	//if stat fails, return a fail for success
+	if (stat(cmd[index], &sb) == -1){
+		perror("stat failed");
+		return false;
+	}
+
+	//if stat is successful
+	switch (sb.st_mode & S_IFMT){
+
+		//if (strcmp(inputLine.c_str(), "exit") == 0){
+
+		case S_IFREG:
+			if ((cmd[1] == "-e") || (cmd[1] == "-f") || (index == 1))
+				return true;
+			else
+				return false;
+
+		case S_IFDIR:
+			if ((cmd[1] == "-e") || (cmd[1] == "-d") || (index == 1))
+				return true;
+			else
+				return false;
+	}
+	
+	return false;
+
 }
 
 bool execute(char **cmd){
