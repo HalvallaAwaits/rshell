@@ -54,7 +54,8 @@ int main(int argc, char * argv[]){
 		
 		//parse input in order to execute	
 		typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-		boost::char_separator<char> sep(" \n", ";#");
+		boost::char_separator<char> sep(" \n", "();#");
+
 		tokenizer toks(inputLine, sep);
 		
 		//copy tokens into vector for easier storage/manipulation 
@@ -69,7 +70,12 @@ int main(int argc, char * argv[]){
 		for (unsigned int i = 0; i < tokens.size(); i++){
 			//if "exit" is found at any point in tokens
 			if (tokens[i] == "exit"){
-				exit(0);	
+				if (prevCn == ";")
+					exit(0);
+				else if (prevCn == "&&" && success == true)
+					exit(0);
+				else if (prevCn == "||" && success == false)
+					exit(0);
 			}
 
 			//if hastag (#) is found, execute for commented line based on prev connector
@@ -100,7 +106,7 @@ int main(int argc, char * argv[]){
 			}
 
 			//if token is connector, operate based on previous connector
-			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||"){
+			if (tokens[i] == ";" || tokens[i] == "&&" || tokens[i] == "||" || tokens[i] == ")"){
 				args[counter] = 0;
 				
 				//if previous connector was ;
@@ -129,6 +135,14 @@ int main(int argc, char * argv[]){
 
 				prevCn = tokens[i];
 				counter = 0;
+			}
+
+			//Precedence Logic
+			else if (tokens[i] == "("){
+				if ((prevCn == "&&" && success == false) || (prevCn == "||" && success == true)){
+					while (tokens[i] != ")")
+						i++;
+				}
 			}
 
 			//------------------------------
@@ -166,8 +180,9 @@ int main(int argc, char * argv[]){
 				counter = 0;
 			}
 
+			
+			//if not a connector
 			else{
-				//if not a connector, store into args array
 				args[counter] = const_cast<char *>(tokens[i].c_str());
 				counter++;
 			}
