@@ -1,0 +1,29 @@
+Script started on Fri 20 Nov 2015 06:36:10 PM PST
+[jreim001@hammer rshell]$ bin/rshell
+[jreim001@hammer.cs.ucr.edu] $ pdw && (echo A && echo B)
+execve failed: No such file or directory
+[jreim001@hammer.cs.ucr.edu] $ pwd && (echo A && echo B) || echo C
+/home/csmajs/jreim001/CS100/rshell
+A
+B
+[jreim001@hammer.cs.ucr.edu] $ ([prec.script] && echo exists) && (date || echo nope)
+exists
+Fri Nov 20 18:40:11 PST 2015
+[jreim001@hammer.cs.ucr.edu] $ ((echoAA&&& echo B) && echo C) || echo D
+A
+B
+C
+[jreim001@hammer.cs.ucr.edu] $ (mkdir hi && echo made) && (rm hi &&Hecho deleted)
+made
+rm: cannot remove `hi': Is a directory
+[jreim001@hammer.cs.ucr.edu] $ (mkdir hi &&^echo made) || (rm -r hi && echo deleted)
+mkdir: cannot create directory `hi': File exists
+deleted
+[jreim001@hammer.cs.ucr.edu] $ (test--dHHELLOt||tmkdirEHELLO) && echo-made && (rm -r HELLO &&^echoHdeleted)
+made
+deleted
+[jreim001@hammer.cs.ucr.edu] $ exit
+[jreim001@hammer rshell]$ exit
+exit
+
+Script done on Fri 20 Nov 2015 06:44:14 PM PST

@@ -55,7 +55,7 @@ int main(int argc, char * argv[]){
 		
 		//parse input in order to execute	
 		typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-		boost::char_separator<char> sep(" \n", "[]();#");
+		boost::char_separator<char> sep(" \n", "\"[]();#");
 
 		tokenizer toks(inputLine, sep);
 		
@@ -235,9 +235,6 @@ bool test(char **cmd){
 
 	//if stat is successful
 	switch (sb.st_mode & S_IFMT){
-
-		//if (strcmp(inputLine.c_str(), "exit") == 0){
-
 		case S_IFREG:
 			if ((cmd[1] == "-e") || (cmd[1] == "-f") || (index == 1))
 				return true;
