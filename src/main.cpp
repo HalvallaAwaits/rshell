@@ -55,7 +55,7 @@ int main(int argc, char * argv[]){
 		
 		//parse input in order to execute	
 		typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-		boost::char_separator<char> sep(" \n", "\"[]();#");
+		boost::char_separator<char> sep(" \n", "[]();#");
 
 		tokenizer toks(inputLine, sep);
 		
