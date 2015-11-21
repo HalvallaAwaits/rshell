@@ -1,0 +1,30 @@
+Script started on Fri 20 Nov 2015 06:23:51 PM PST
+[jreim001@hammer rshell]$ bin/rshell
+[jreim001@hammer.cs.ucr.edu] $ test tests.script && echo exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ test -d tests.script && echo exists
+[jreim001@hammer.cs.ucr.edu] $ test -e tests.script && echo exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ test -f tests.script && echo exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ [tests.script && echo exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ [tests.script] && echo exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ [ -d ./src ] && echo exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ ([ -d ./src] && test -f tests.script) && echo both
+both
+[jreim001@hammer.cs.ucr.edu] $ test -f ./src || pwd
+/home/csmajs/jreim001/CS100/rshell
+[jreim001@hammer.cs.ucr.edu] $ ([./src] && echo exists) && ([tests.script] && echo exists)
+exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ ([./src]&& echo exists)&&([tests.script]&& echo exists)
+exists
+exists
+[jreim001@hammer.cs.ucr.edu] $ exit
+[jreim001@hammer rshell]$ exit
+exit
+
+Script done on Fri 20 Nov 2015 06:25:32 PM PST

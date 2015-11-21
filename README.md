@@ -7,10 +7,14 @@ Joseph Reimbold
 Eric Marcelo
 [emarc003@ucr.edu](mailto:emarc003@ucr.edu)
 
-##What is it?
+##Design
 
    This is a command shell named rShell that is able to read in commands from a 
-command line and execute multiple commands at once.
+command line and execute multiple commands at once. It is intended for basic use
+as it currently will only take pre-built commands found in /bin.
+
+	A more robust feature set could be added and expanded functionality could include
+commands such as the change directory command `cd`, etc.
 
 ###Functionality
 
@@ -33,6 +37,17 @@ failed.
 
 > $ echo hello #just saying hi!
 
+* Use parenthesis `( )` to set a precedence order to your commands. This causes your
+commands to act as a group.
+
+> $ (echo A && echo B) || (echo C && echo D)
+
+* Use `test` to check for a file or directory with the flags `-e`, `-f`, or `-d`. You
+can also use brackets `[ ]` and wrap the flag with the path as an alternative.
+
+> $ test -e ./src/main.cpp
+> $ [-e ./src/main.cpp]
+
 * Use `exit` to exit out of rShell. Use it at the end of a chain of commands to
 perform them before you exit!
 
@@ -51,6 +66,7 @@ perform them before you exit!
 > make clean
 
 ##Known Bugs
-1. A command can have up to 31 arguments (including the command itself), anything more will `break` it.
-2. Typing exit at the end of a command following any parameters will cause it to `exit` without performing that particular command, but the preceding commands will be called.
+Limitation: A command can have up to 31 arguments (including the command itself), anything more will `break` it.
 
+1. Quotes do not currently function properly. The command echo "A # B" will echo '"A '
+and then break out since it finds a comment.
